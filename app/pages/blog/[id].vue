@@ -22,28 +22,17 @@
 
 <script setup lang="ts">
 const route = useRoute()
-const blogId = computed(() => route.params.id as string)
+const blogId = computed(() => parseInt(route.params.id as string))
 
-const { data: post } = await useFetch(() => `https://jsonplaceholder.typicode.com/posts/${blogId.value}`, {
-  transform: (data: any) => ({
-    id: data.id,
-    title: data.title,
-    description: data.body,
-    userId: data.userId,
-    date: new Date().toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  })
-})
+const { getPost, getAuthor } = useBlog()
 
-const url = `https://jsonplaceholder.typicode.com/users/${post.value?.userId}`
-const { data: author } = (await useFetch(() => url, { transform: (data: any) => data.name })) || 'Desconocido'
+// Obtiene el post
+const post = await getPost(blogId.value)
+const author = post?.userId ? await getAuthor(post.userId) : 'Desconocido'
 
 useSeoMeta({
-  title: () => post.value?.title || 'Post',
-  description: () => post.value?.description || ''
+  title: () => post?.title || 'Post',
+  description: () => post?.description?.substring(0, 160) || ''
 })
 </script>
 

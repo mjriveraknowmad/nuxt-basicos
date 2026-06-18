@@ -17,15 +17,10 @@
 </template>
 
 <script setup lang="ts">
-const { data: posts } = await useFetch('https://jsonplaceholder.typicode.com/posts?_limit=6', {
-  transform: (data: any[]) =>
-    data.map(post => ({
-      id: post.id,
-      title: post.title,
-      description: post.body,
-      date: new Date().toLocaleDateString()
-    }))
-})
+const { posts, loading, getPosts } = useBlog()
+
+// Obtiene los posts al montar la página
+await getPosts(6)
 
 useSeoMeta({
   title: 'Blog',
