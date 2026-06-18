@@ -1,49 +1,26 @@
+<script setup lang="ts">
+const menuItems = [
+  {
+    label: 'Home',
+    to: '/'
+  },
+  {
+    label: 'Nosotros',
+    to: '/nosotros'
+  }
+]
+</script>
+
 <template>
-  <UDropdownMenu
-    v-slot="{ open }"
-    :modal="false"
-    :items="[{
-      label: 'Starter',
-      to: 'https://starter-template.nuxt.dev/',
-      color: 'primary',
-      checked: true,
-      type: 'checkbox'
-    }, {
-      label: 'Landing',
-      to: 'https://landing-template.nuxt.dev/'
-    }, {
-      label: 'Docs',
-      to: 'https://docs-template.nuxt.dev/'
-    }, {
-      label: 'SaaS',
-      to: 'https://saas-template.nuxt.dev/'
-    }, {
-      label: 'Dashboard',
-      to: 'https://dashboard-template.nuxt.dev/'
-    }, {
-      label: 'Chat',
-      to: 'https://chat-template.nuxt.dev/'
-    }, {
-      label: 'Portfolio',
-      to: 'https://portfolio-template.nuxt.dev/'
-    }, {
-      label: 'Changelog',
-      to: 'https://changelog-template.nuxt.dev/'
-    }]"
-    :content="{ align: 'start' }"
-    :ui="{ content: 'min-w-fit' }"
-    size="xs"
-  >
-    <UButton
-      label="Starter"
-      variant="subtle"
-      trailing-icon="i-lucide-chevron-down"
-      size="xs"
-      class="-mb-[6px] font-semibold rounded-full truncate"
-      :class="[open && 'bg-primary/15']"
-      :ui="{
-        trailingIcon: ['transition-transform duration-200', open ? 'rotate-180' : undefined].filter(Boolean).join(' ')
-      }"
-    />
-  </UDropdownMenu>
+  <nav class="flex gap-4">
+    <NuxtLink
+      v-for="item in menuItems"
+      :key="item.to"
+      :to="item.to"
+      class="text-sm font-medium transition-colors hover:text-primary"
+      active-class="text-primary font-semibold"
+    >
+      {{ item.label }}
+    </NuxtLink>
+  </nav>
 </template>
