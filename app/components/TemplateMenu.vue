@@ -5,6 +5,10 @@ const menuItems = [
     to: '/'
   },
   {
+    label: 'Blog',
+    to: '/blog'
+  },
+  {
     label: 'Nosotros',
     to: '/nosotros'
   }
