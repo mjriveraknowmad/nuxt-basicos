@@ -16,50 +16,21 @@
   </div>
 </template>
 
-<script setup>
-const posts = ref([
-  {
-    id: 1,
-    title: 'Introducción a Nuxt 3',
-    date: '15 de enero, 2024',
-    description:
-      'Descubre las nuevas características y mejoras que trae Nuxt 3 para el desarrollo de aplicaciones Vue modernas.'
-  },
-  {
-    id: 2,
-    title: 'Mejores prácticas en Vue',
-    date: '12 de enero, 2024',
-    description:
-      'Aprende las mejores prácticas para escribir código limpio y mantenible en tus proyectos Vue.'
-  },
-  {
-    id: 3,
-    title: 'Composables: El futuro de Vue',
-    date: '8 de enero, 2024',
-    description:
-      'Explora cómo los Composables están revolucionando la forma en que componemos lógica en Vue 3.'
-  },
-  {
-    id: 4,
-    title: 'SSR con Nuxt: Renderizado en servidor',
-    date: '5 de enero, 2024',
-    description:
-      'Entiende cómo funciona el Server-Side Rendering y sus ventajas para el SEO y rendimiento.'
-  },
-  {
-    id: 5,
-    title: 'Gestión de estado con Pinia',
-    date: '1 de enero, 2024',
-    description:
-      'Domina Pinia, la nueva librería de gestión de estado recomendada para proyectos Vue.'
-  },
-  {
-    id: 6,
-    title: 'Testing en aplicaciones Vue',
-    date: '28 de diciembre, 2023',
-    description: 'Cómo escribir tests efectivos para tus componentes y funciones en Vue.'
-  }
-])
+<script setup lang="ts">
+const { data: posts } = await useFetch('https://jsonplaceholder.typicode.com/posts?_limit=6', {
+  transform: (data: any[]) =>
+    data.map(post => ({
+      id: post.id,
+      title: post.title,
+      description: post.body,
+      date: new Date().toLocaleDateString()
+    }))
+})
+
+useSeoMeta({
+  title: 'Blog',
+  description: 'Artículos y noticias del blog'
+})
 </script>
 
 <style scoped>
