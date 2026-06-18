@@ -5,68 +5,45 @@
     </div>
     <div class="blog-item">
       <h1>
-        {{ title }}
-        <span class="id-display"> ({{ $route.params.id }}) </span>
+        {{ post?.title }}
+        <span class="id-display"> ({{ blogId }}) </span>
       </h1>
 
       <div class="content">
-        <p>{{ description }}</p>
+        <p>{{ post?.description }}</p>
       </div>
       <div class="meta">
-        <span class="date">{{ publishedDate }}</span>
+        <span class="date">{{ post?.date }}</span>
         <span class="author">{{ author }}</span>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-
+<script setup lang="ts">
 const route = useRoute()
-const blogId = computed(() => route.params.id)
+const blogId = computed(() => route.params.id as string)
 
-// Generar datos random del blog basado en el ID
-const title = computed(() => {
-  const titles = [
-    'Introducción a Vue 3',
-    'Guía Completa de Nuxt',
-    'Mejores Prácticas en JavaScript',
-    'Desarrollo Fullstack',
-    'Performance en Aplicaciones Web'
-  ]
-  return titles[blogId.value % titles.length]
+const { data: post } = await useFetch(() => `https://jsonplaceholder.typicode.com/posts/${blogId.value}`, {
+  transform: (data: any) => ({
+    id: data.id,
+    title: data.title,
+    description: data.body,
+    userId: data.userId,
+    date: new Date().toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  })
 })
 
-const description = computed(() => {
-  const descriptions = [
-    'Descubre las nuevas características de Vue 3 y cómo mejorar tus aplicaciones.',
-    'Todo lo que necesitas saber sobre Nuxt para desarrollar aplicaciones modernas.',
-    'Aplica las mejores prácticas de JavaScript en tus proyectos.',
-    'Aprende a construir aplicaciones completas con frontend y backend.',
-    'Optimiza el rendimiento de tu aplicación web con estas técnicas.'
-  ]
-  return descriptions[blogId.value % descriptions.length]
-})
+const url = `https://jsonplaceholder.typicode.com/users/${post.value?.userId}`
+const { data: author } = (await useFetch(() => url, { transform: (data: any) => data.name })) || 'Desconocido'
 
-const author = computed(() => {
-  const authors = [
-    'Juan Pérez',
-    'María García',
-    'Carlos López',
-    'Ana Rodríguez',
-    'Miguel Fernández'
-  ]
-  return authors[blogId.value % authors.length]
-})
-
-const publishedDate = computed(() => {
-  const baseDate = new Date('2024-01-01')
-  const randomDays = (blogId.value * 7) % 365
-  const date = new Date(baseDate)
-  date.setDate(date.getDate() + randomDays)
-  return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })
+useSeoMeta({
+  title: () => post.value?.title || 'Post',
+  description: () => post.value?.description || ''
 })
 </script>
 
